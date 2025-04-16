@@ -4,7 +4,7 @@ import { useMap } from '../state/MapContext';
 const ZOOM_LEVELS = {
   STATE_LEVEL: 4,
   COUNTY_LEVEL: 9,
-  DETAILED_LEVEL: 12,
+  DETAILED_LEVEL: 10,
 };
 
 export function useLayerVisibility() {

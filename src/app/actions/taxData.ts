@@ -12,8 +12,8 @@ interface TaxData {
 export async function fetchTaxData(): Promise<TaxData[]> {
   try {
     // Read the CSV file from the public directory
-    const csvPath = path.join(process.cwd(), 'public/data/country-level-income-tax.csv');
-    const fileContent = fs.readFileSync(csvPath, 'utf-8');
+    const response = await fetch('https://mdnmz6nfmw4cmenl.public.blob.vercel-storage.com/country-level-income-tax.csv');
+    const fileContent = await response.text();
     
     // Parse the CSV content
     const records = parse(fileContent, {

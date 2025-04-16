@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@deck.gl/aggregation-layers": "^9.1.9",
     "@deck.gl/layers": "^9.1.9",
     "@deck.gl/react": "^9.1.9",
     "@radix-ui/react-dialog": "^1.1.7",
