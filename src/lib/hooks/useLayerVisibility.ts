@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import { useMap } from '../state/MapContext';
 
 const ZOOM_LEVELS = {
-  STATE_LEVEL: 5,
+  STATE_LEVEL: 3,
   COUNTY_LEVEL: 9,
   DETAILED_LEVEL: 12,
 };
