@@ -8,10 +8,7 @@ import MapGL from 'react-map-gl/mapbox';
 import { ScatterplotLayer, GeoJsonLayer } from '@deck.gl/layers';
 import * as turf from '@turf/turf';
 import 'mapbox-gl/dist/mapbox-gl.css';
-import { fetchUSA, seattle, olympia } from '@/data/geographicBoundaries';
-import usaData from '../data/gz_2010_us_040_00_20m.json';
 import kingCountyVoting from '../data/Voting_Districts_of_King_County___votdst_area.json';
-import kingCountyFire from '../data/Fire_Protection_Districts_of_King_County___firdst_area.json';
 
 interface MapProps {
   // No props needed as we're using context
@@ -38,7 +35,7 @@ export default function MapComponent({}: MapProps) {
     // States layer
     new GeoJsonLayer({
       id: 'states',
-      data: 'https://raw.githubusercontent.com/uber-common/deck.gl-data/master/examples/geojson/virginia.json',
+      // data: statesGeoJson as any,
       pickable: true,
       stroked: true,
       filled: true,
@@ -51,7 +48,7 @@ export default function MapComponent({}: MapProps) {
     // Counties layer
     new GeoJsonLayer({
       id: 'counties',
-      data: 'https://raw.githubusercontent.com/uber-common/deck.gl-data/master/examples/geojson/virginia.json',
+      data: (kingCountyVoting as any).features,
       pickable: true,
       stroked: true,
       filled: true,
@@ -77,7 +74,7 @@ export default function MapComponent({}: MapProps) {
         const centroid = turf.centroid(d);
         return centroid.geometry.coordinates as [number, number, number];
       },
-      getRadius: 1000,
+      getRadius: 10,
       getFillColor: [255, 140, 0],
       getLineColor: [0, 0, 0],
       visible: layers.detailedPoints

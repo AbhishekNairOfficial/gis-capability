@@ -3,7 +3,7 @@ import { useMap } from '../state/MapContext';
 
 const ZOOM_LEVELS = {
   STATE_LEVEL: 5,
-  COUNTY_LEVEL: 8,
+  COUNTY_LEVEL: 9,
   DETAILED_LEVEL: 12,
 };
 
@@ -14,7 +14,7 @@ export function useLayerVisibility() {
   useEffect(() => {
     const updateLayers = () => {
       const newLayers = {
-        statePoints: zoom < ZOOM_LEVELS.COUNTY_LEVEL,
+        statePoints: ZOOM_LEVELS.STATE_LEVEL < zoom && zoom < ZOOM_LEVELS.COUNTY_LEVEL,
         countyPoints: zoom >= ZOOM_LEVELS.COUNTY_LEVEL && zoom < ZOOM_LEVELS.DETAILED_LEVEL,
         detailedPoints: zoom >= ZOOM_LEVELS.DETAILED_LEVEL,
       };
