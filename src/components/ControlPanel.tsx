@@ -1,86 +1,54 @@
 'use client';
 
-import { Slider } from '@/components/ui/slider';
-import { Switch } from '@/components/ui/switch';
-import { Label } from '@/components/ui/label';
+import { useMap } from '@/lib/state/MapContext';
+import { useState, useEffect } from 'react';
 
-interface ControlPanelProps {
-  onLayerToggle: (layerId: string) => void;
-  onZoomChange: (zoom: number) => void;
-  activeLayers: Record<string, boolean>;
-}
+export default function ControlPanel() {
+  const { state, dispatch } = useMap();
+  const [zoom, setZoom] = useState(state.viewState.zoom);
 
-export default function ControlPanel({ onLayerToggle, onZoomChange, activeLayers }: ControlPanelProps) {
+  useEffect(() => {
+    setZoom(state.viewState.zoom);
+  }, [state.viewState.zoom]);
+
+  const handleZoomChange = (newZoom: number) => {
+    setZoom(newZoom);
+    dispatch({
+      type: 'SET_VIEW_STATE',
+      payload: { ...state.viewState, zoom: newZoom }
+    });
+  };
+
   return (
-    <div className="absolute top-4 right-4 bg-white p-4 rounded-lg shadow-lg z-10">
-      <div className="space-y-4">
-        <div>
-          <Label>Zoom Level</Label>
-          <Slider
-            defaultValue={[13]}
-            min={1}
-            max={20}
-            step={0.1}
-            onValueChange={(value) => onZoomChange(value[0])}
-          />
-        </div>
+    <div className="absolute top-4 right-4 bg-white p-4 rounded-lg shadow-lg">
+      <div className="mb-4">
+        <label className="block text-sm font-medium text-gray-700 mb-2">
+          Zoom Level: {zoom.toFixed(2)}
+        </label>
+        <input
+          type="range"
+          min="0"
+          max="20"
+          step="0.1"
+          value={zoom}
+          onChange={(e) => handleZoomChange(parseFloat(e.target.value))}
+          className="w-full"
+        />
+      </div>
+      <div>
+        <h3 className="text-sm font-medium text-gray-700 mb-2">Active Layers</h3>
         <div className="space-y-2">
-          <div className="flex items-center space-x-2">
-            <Switch
-              id="scatterplot"
-              checked={activeLayers.scatterplot}
-              onCheckedChange={() => onLayerToggle('scatterplot')}
-            />
-            <Label htmlFor="scatterplot">Points</Label>
-          </div>
-          <div className="flex items-center space-x-2">
-            <Switch
-              id="path"
-              checked={activeLayers.path}
-              onCheckedChange={() => onLayerToggle('path')}
-            />
-            <Label htmlFor="path">Path</Label>
-          </div>
-          <div className="flex items-center space-x-2">
-            <Switch
-              id="states"
-              checked={activeLayers.countries}
-              onCheckedChange={() => onLayerToggle('countries')}
-            />
-            <Label htmlFor="states">USA</Label>
-          </div>
-          <div className="flex items-center space-x-2">
-            <Switch
-              id="states"
-              checked={activeLayers.states}
-              onCheckedChange={() => onLayerToggle('states')}
-            />
-            <Label htmlFor="states">US States</Label>
-          </div>
-          <div className="flex items-center space-x-2">
-            <Switch
-              id="counties"
-              checked={activeLayers.counties}
-              onCheckedChange={() => onLayerToggle('counties')}
-            />
-            <Label htmlFor="counties">US Counties</Label>
-          </div>
-          <div className="flex items-center space-x-2">
-            <Switch
-              id="cities"
-              checked={activeLayers.cities}
-              onCheckedChange={() => onLayerToggle('cities')}
-            />
-            <Label htmlFor="cities">US Cities</Label>
-          </div>
-          <div className="flex items-center space-x-2">
-            <Switch
-              id="capitals"
-              checked={activeLayers.capitals}
-              onCheckedChange={() => onLayerToggle('capitals')}
-            />
-            <Label htmlFor="capitals">State Capitals</Label>
-          </div>
+          {Object.entries(state.layers).map(([layer, isVisible]) => (
+            <label key={layer} className="flex items-center space-x-2">
+              <input
+                type="checkbox"
+                checked={isVisible}
+                onChange={() => dispatch({ type: 'TOGGLE_LAYER', payload: layer as keyof typeof state.layers })}
+                className="rounded text-blue-600"
+              />
+              <span className="text-sm text-gray-700">{layer}</span>
+            </label>
+          ))}
         </div>
       </div>
     </div>
