@@ -13,6 +13,7 @@ import { fetchTaxData } from '@/app/actions/taxData';
 import { useEffect, useState } from 'react';
 import statesGeoJson from '../data/us-states-geojson.json';
 import kingCountyVoting from '../data/Voting_Districts_of_King_County___votdst_area.json';
+import Loading from '@/app/loading';
 
 interface TaxData {
   state_name: string;
@@ -213,11 +214,7 @@ export default function MapComponent({}: MapProps) {
 
   return (
     <div className="relative w-full h-screen">
-      {isLoading && (
-        <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-          <div className="text-white text-xl">Loading data...</div>
-        </div>
-      )}
+      {isLoading && <Loading />}
       <DeckGL
         initialViewState={state.viewState}
         viewState={state.viewState}
