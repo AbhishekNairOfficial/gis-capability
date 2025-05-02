@@ -70,6 +70,20 @@ function createRadiusScale(min: number, max: number) {
   };
 }
 
+// Number formatting function
+function formatNumber(num: number): string {
+  if (num >= 1000000000) {
+    return (num / 1000000000).toFixed(1) + 'Bn';
+  }
+  if (num >= 1000000) {
+    return (num / 1000000).toFixed(1) + 'Mn';
+  }
+  if (num >= 1000) {
+    return (num / 1000).toFixed(1) + 'K';
+  }
+  return num.toString();
+}
+
 export default function MapComponent({}: MapProps) {
   const { state, dispatch } = useMap();
   const layers = useLayerVisibility();
@@ -77,6 +91,37 @@ export default function MapComponent({}: MapProps) {
   const [colorScale, setColorScale] = useState<((value: number) => [number, number, number, number]) | null>(null);
   const [radiusScale, setRadiusScale] = useState<((value: number) => number) | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [hoverInfo, setHoverInfo] = useState<{x: number, y: number, object: any} | null>(null);
+  const [displayValue, setDisplayValue] = useState<number>(0);
+
+  // Update display value with animation when hover info changes
+  useEffect(() => {
+    if (hoverInfo) {
+      const targetValue = hoverInfo.object.elevationValue;
+      const startValue = displayValue;
+      const duration = 300; // Animation duration in ms
+      const startTime = performance.now();
+
+      const animate = (currentTime: number) => {
+        const elapsed = currentTime - startTime;
+        const progress = Math.min(elapsed / duration, 1);
+        
+        // Easing function for smooth animation
+        const easeProgress = progress < 0.5
+          ? 4 * progress * progress * progress
+          : 1 - Math.pow(-2 * progress + 2, 3) / 2;
+
+        const currentValue = startValue + (targetValue - startValue) * easeProgress;
+        setDisplayValue(currentValue);
+
+        if (progress < 1) {
+          requestAnimationFrame(animate);
+        }
+      };
+
+      requestAnimationFrame(animate);
+    }
+  }, [hoverInfo]);
 
   useEffect(() => {
     async function loadData() {
@@ -208,7 +253,23 @@ export default function MapComponent({}: MapProps) {
         shininess: 32,
         specularColor: [51, 51, 51]
       },
-      visible: layers.detailedPoints
+      visible: layers.detailedPoints,
+      // Add hover handling
+      onHover: (info) => {
+        setHoverInfo(info.object ? {
+          x: info.x,
+          y: info.y,
+          object: info.object
+        } : null);
+        return true;
+      },
+      // Add black border
+      stroked: true,
+      lineWidthMinPixels: 2,
+      getLineColor: [0, 0, 0, 255],
+      // Highlight on hover
+      autoHighlight: true,
+      highlightColor: [255, 255, 255, 200]
     })] : [])
   ];
 
@@ -227,6 +288,58 @@ export default function MapComponent({}: MapProps) {
           mapboxAccessToken={process.env.NEXT_PUBLIC_MAPBOX_TOKEN}
         />
       </DeckGL>
+      {hoverInfo && (
+        <div
+          style={{
+            position: 'absolute',
+            left: hoverInfo.x,
+            top: hoverInfo.y,
+            backgroundColor: 'rgba(255, 255, 255, 0.98)',
+            padding: '12px 16px 12px 24px',
+            borderRadius: '8px',
+            boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
+            pointerEvents: 'none',
+            zIndex: 1000,
+            transform: 'translate(-50%, -100%)',
+            marginTop: '-8px',
+            border: '1px solid rgba(0,0,0,0.1)',
+            backdropFilter: 'blur(4px)',
+            minWidth: '140px',
+            textAlign: 'left',
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '4px'
+          }}
+        >
+          <div style={{
+            position: 'absolute',
+            left: '8px',
+            top: '12px',
+            bottom: '12px',
+            width: '2px',
+            backgroundColor: '#2563eb',
+            borderRadius: '1px'
+          }} />
+          <div style={{ 
+            fontSize: '13px', 
+            color: '#64748b',
+            textTransform: 'uppercase',
+            letterSpacing: '0.5px',
+            fontWeight: '500'
+          }}>
+            Total Voters
+          </div>
+          <div style={{ 
+            fontSize: '22px', 
+            fontWeight: '600',
+            color: '#1e293b',
+            fontFamily: 'system-ui, -apple-system, sans-serif',
+            lineHeight: '1.2'
+          }}>
+            {formatNumber(Math.round(displayValue))}
+          </div>
+        </div>
+      )}
     </div>
   );
 } 
