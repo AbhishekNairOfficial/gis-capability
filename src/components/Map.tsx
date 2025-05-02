@@ -99,7 +99,7 @@ export default function MapComponent({}: MapProps) {
     if (hoverInfo) {
       const targetValue = hoverInfo.object.elevationValue;
       const startValue = displayValue;
-      const duration = 300; // Animation duration in ms
+      const duration = 500; // Animation duration in ms
       const startTime = performance.now();
 
       const animate = (currentTime: number) => {
