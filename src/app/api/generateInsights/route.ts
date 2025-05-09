@@ -14,11 +14,11 @@ export const POST = async (req: Request) => {
       });
     }
 
-    const prompt = `District: ${districtId}, Voters: ${voterCount}.
-Generate insights based on voter turnout, compare with neighboring districts, and account for geographical or demographic factors if available.`;
+    const prompt = `King County Washington, District: ${districtId}, Voters: ${voterCount}.
+Generate some insights about the district and why the vote count is what it is. Be consise and answer in 1-2 sentences.`;
 
     const response = await openai.chat.completions.create({
-      model: "gpt-4",
+      model: "gpt-3.5-turbo",
       messages: [{ role: "user", content: prompt }],
       max_tokens: 150,
       temperature: 0.7,

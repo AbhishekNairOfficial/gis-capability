@@ -1,10 +1,45 @@
 import { formatNumber } from "@/lib/utils";
+import React from "react";
 
 const HoverCard = ({ hoverInfo, displayValue }: { hoverInfo: any, displayValue: number }) => {
     if (!hoverInfo || !displayValue) return null;
 
     const { x, y, object } = hoverInfo;
     const {votdst, NAME} = object.points[0].properties;
+    const [insights, setInsights] = React.useState<string | null>(null);
+
+    const fetchInsights = async () => {
+      try {
+        const response = await fetch('/api/generateInsights', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ districtId: votdst, voterCount: displayValue }),
+        });
+  
+        if (!response.ok) {
+          const err = await response.json();
+          throw new Error(err.error);
+        }
+  
+        const data = await response.json();
+        setInsights(data.insights);
+      } catch (err) {
+        console.error('Error fetching insights:', err);
+      }
+    };
+
+    React.useEffect(() => {
+      if (displayValue) {
+        const timeoutId = setTimeout(() => {
+          fetchInsights();
+        }, 5000);
+
+        // Cleanup function to clear the timeout if displayValue changes
+        return () => clearTimeout(timeoutId);
+      }
+    }, [displayValue]);
 
     return (
         <div
@@ -55,7 +90,15 @@ const HoverCard = ({ hoverInfo, displayValue }: { hoverInfo: any, displayValue: 
             lineHeight: '1.2'
           }}>
             {formatNumber(Math.round(displayValue))}
-          </div>
+          </div>  
+          {insights && (
+            <div style={{
+              fontSize: '12px',
+              color: '#64748b'
+            }}>
+              {insights}
+            </div>
+          )}
         </div>
     )
 }

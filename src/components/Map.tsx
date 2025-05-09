@@ -275,7 +275,7 @@ export default function MapComponent({}: MapProps) {
           mapboxAccessToken={process.env.NEXT_PUBLIC_MAPBOX_TOKEN}
         />
       </DeckGL>
-      <HoverCard hoverInfo={hoverInfo} displayValue={displayValue} />
+      {hoverInfo && <HoverCard hoverInfo={hoverInfo} displayValue={displayValue} />}
     </div>
   );
 } 
