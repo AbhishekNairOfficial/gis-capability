@@ -1,21 +1,33 @@
 import { formatNumber } from "@/lib/utils";
 import React from "react";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const HoverCard = ({ hoverInfo, displayValue }: { hoverInfo: any, displayValue: number }) => {
-    if (!hoverInfo || !displayValue) return null;
 
     const { x, y, object } = hoverInfo;
     const {votdst, NAME} = object.points[0].properties;
     const [insights, setInsights] = React.useState<string | null>(null);
+    const [isLoading, setIsLoading] = React.useState(false);
+    const abortControllerRef = React.useRef<AbortController | null>(null);
 
     const fetchInsights = async () => {
       try {
+        setIsLoading(true);
+        // Cancel any existing request
+        if (abortControllerRef.current) {
+          abortControllerRef.current.abort();
+        }
+
+        // Create new AbortController for this request
+        abortControllerRef.current = new AbortController();
+
         const response = await fetch('/api/generateInsights', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({ districtId: votdst, voterCount: displayValue }),
+          signal: abortControllerRef.current.signal
         });
   
         if (!response.ok) {
@@ -25,77 +37,60 @@ const HoverCard = ({ hoverInfo, displayValue }: { hoverInfo: any, displayValue: 
   
         const data = await response.json();
         setInsights(data.insights);
-      } catch (err) {
-        console.error('Error fetching insights:', err);
+      } catch (err: any) {
+        // Don't set error state if the request was aborted
+        if (err.name !== 'AbortError') {
+          console.error('Error fetching insights:', err);
+        }
+      } finally {
+        setIsLoading(false);
       }
     };
 
     React.useEffect(() => {
       if (displayValue) {
+        setIsLoading(true);
         const timeoutId = setTimeout(() => {
           fetchInsights();
-        }, 5000);
+        }, 1 * 1000);
 
-        // Cleanup function to clear the timeout if displayValue changes
-        return () => clearTimeout(timeoutId);
+        // Cleanup function to clear the timeout and abort any pending request
+        return () => {
+          clearTimeout(timeoutId);
+          setIsLoading(false);
+          if (abortControllerRef.current) {
+            abortControllerRef.current.abort();
+            abortControllerRef.current = null;
+          }
+        };
       }
     }, [displayValue]);
+
+    if (!hoverInfo || !displayValue) return null;
 
     return (
         <div
           style={{
-            position: 'absolute',
             left: x,
             top: y,
-            backgroundColor: 'rgba(255, 255, 255, 0.98)',
-            padding: '12px 16px 12px 24px',
-            borderRadius: '8px',
-            boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
-            pointerEvents: 'none',
-            zIndex: 1000,
-            transform: 'translate(-50%, -100%)',
-            marginTop: '-8px',
-            border: '1px solid rgba(0,0,0,0.1)',
-            backdropFilter: 'blur(4px)',
-            minWidth: '140px',
-            textAlign: 'left',
-            display: 'flex',
-            flexDirection: 'column',
-            gap: '4px'
           }}
+          className="absolute -translate-x-1/2 -translate-y-full -mt-2 bg-white/98 p-3 pl-6 rounded-lg shadow-lg pointer-events-none z-[1000] border border-black/10 backdrop-blur-sm min-w-[140px] text-left flex flex-col gap-1"
         >
-          <div style={{
-            position: 'absolute',
-            left: '8px',
-            top: '12px',
-            bottom: '12px',
-            width: '2px',
-            backgroundColor: '#2563eb',
-            borderRadius: '1px'
-          }} />
-          <div style={{ 
-            fontSize: '13px', 
-            color: '#64748b',
-            textTransform: 'uppercase',
-            letterSpacing: '0.5px',
-            fontWeight: '500'
-          }}>
+          <div className="absolute left-2 top-3 bottom-3 w-0.5 bg-blue-600 rounded-sm" />
+          <div className="text-xs text-slate-500 uppercase tracking-wider font-medium">
             {NAME}
           </div>
-          <div style={{ 
-            fontSize: '22px', 
-            fontWeight: '600',
-            color: '#1e293b',
-            fontFamily: 'system-ui, -apple-system, sans-serif',
-            lineHeight: '1.2'
-          }}>
+          <div className="text-[22px] font-semibold text-slate-800 font-sans leading-tight">
             {formatNumber(Math.round(displayValue))}
           </div>  
-          {insights && (
-            <div style={{
-              fontSize: '12px',
-              color: '#64748b'
-            }}>
+          {isLoading ? (
+            <div className="space-y-2">
+              <Skeleton className="h-3 w-[300px]" />
+              <Skeleton className="h-3 w-[300px]" />
+              <Skeleton className="h-3 w-[250px]" />
+            </div>
+          ) : insights && (
+            <div className="text-xs text-slate-500">
               {insights}
             </div>
           )}
