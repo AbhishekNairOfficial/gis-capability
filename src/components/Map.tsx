@@ -14,6 +14,7 @@ import { useEffect, useState } from 'react';
 import statesGeoJson from '../data/us-states-geojson.json';
 import kingCountyVoting from '../data/Voting_Districts_of_King_County___votdst_area.json';
 import Loading from '@/app/loading';
+import HoverCard from './hover-card';
 
 interface TaxData {
   state_name: string;
@@ -68,20 +69,6 @@ function createRadiusScale(min: number, max: number) {
     // Scale radius between 1 and 49 pixels
     return 1 + normalized * 49;
   };
-}
-
-// Number formatting function
-function formatNumber(num: number): string {
-  if (num >= 1000000000) {
-    return (num / 1000000000).toFixed(1) + 'Bn';
-  }
-  if (num >= 1000000) {
-    return (num / 1000000).toFixed(1) + 'Mn';
-  }
-  if (num >= 1000) {
-    return (num / 1000).toFixed(1) + 'K';
-  }
-  return num.toString();
 }
 
 export default function MapComponent({}: MapProps) {
@@ -288,58 +275,7 @@ export default function MapComponent({}: MapProps) {
           mapboxAccessToken={process.env.NEXT_PUBLIC_MAPBOX_TOKEN}
         />
       </DeckGL>
-      {hoverInfo && (
-        <div
-          style={{
-            position: 'absolute',
-            left: hoverInfo.x,
-            top: hoverInfo.y,
-            backgroundColor: 'rgba(255, 255, 255, 0.98)',
-            padding: '12px 16px 12px 24px',
-            borderRadius: '8px',
-            boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
-            pointerEvents: 'none',
-            zIndex: 1000,
-            transform: 'translate(-50%, -100%)',
-            marginTop: '-8px',
-            border: '1px solid rgba(0,0,0,0.1)',
-            backdropFilter: 'blur(4px)',
-            minWidth: '140px',
-            textAlign: 'left',
-            display: 'flex',
-            flexDirection: 'column',
-            gap: '4px'
-          }}
-        >
-          <div style={{
-            position: 'absolute',
-            left: '8px',
-            top: '12px',
-            bottom: '12px',
-            width: '2px',
-            backgroundColor: '#2563eb',
-            borderRadius: '1px'
-          }} />
-          <div style={{ 
-            fontSize: '13px', 
-            color: '#64748b',
-            textTransform: 'uppercase',
-            letterSpacing: '0.5px',
-            fontWeight: '500'
-          }}>
-            Total Voters
-          </div>
-          <div style={{ 
-            fontSize: '22px', 
-            fontWeight: '600',
-            color: '#1e293b',
-            fontFamily: 'system-ui, -apple-system, sans-serif',
-            lineHeight: '1.2'
-          }}>
-            {formatNumber(Math.round(displayValue))}
-          </div>
-        </div>
-      )}
+      <HoverCard hoverInfo={hoverInfo} displayValue={displayValue} />
     </div>
   );
 } 
