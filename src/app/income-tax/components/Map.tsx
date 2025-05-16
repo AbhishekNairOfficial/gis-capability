@@ -4,9 +4,13 @@ import { MapViewState, useMap } from "@/lib/state/MapContext";
 import DeckGL from "@deck.gl/react";
 import MapGL from 'react-map-gl/mapbox';
 import { Skeleton } from "@/components/ui/skeleton";
+import useMapStore from "@/lib/zustand";
+import useLayerVisibility from "@/lib/zustand/useLayerVisibility";
 
-const IncomTaxMap = () => {
-    const { state, dispatch } = useMap();
+const IncomeTaxMap = () => {
+    const viewState = useMapStore((state: any) => state.viewState);
+    const layers = useMapStore((state: any) => state.layers);
+    const setViewState = useMapStore((state: any) => state.setViewState);
     const [{x,y}, setHoverInfo] = useState({x: 0, y: 0});
 
     const [zipCode, setZipCode] = useState<string>("");
@@ -14,25 +18,15 @@ const IncomTaxMap = () => {
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const abortControllerRef = useRef<AbortController | null>(null);
 
-    const handleViewStateChange = (viewState: MapViewState) => {
-        dispatch({
-          type: 'SET_VIEW_STATE',
-          payload: {
-            longitude: viewState.longitude,
-            latitude: viewState.latitude,
-            zoom: viewState.zoom,
-            pitch: viewState.pitch,
-            bearing: viewState.bearing
-          }
-        });
-    };
+    useLayerVisibility();
 
     const deckLayers = [
-      [WashingtonZipcodeGeoJson({layers: {countyPoints: true}, setZipCode, setHoverInfo})]
+      [WashingtonZipcodeGeoJson({setZipCode, setHoverInfo, layers})]
     ];
 
     const fetchInsights = async () => {
       // Cancel any existing request
+      return;
       setIsLoading(true);
       if (abortControllerRef.current) {
         abortControllerRef.current.abort();
@@ -73,9 +67,8 @@ const IncomTaxMap = () => {
     return (
         <div className="relative w-full h-screen">
       <DeckGL
-        initialViewState={state.viewState}
-        viewState={state.viewState}
-        onViewStateChange={({ viewState }) => handleViewStateChange(viewState as MapViewState)}
+        viewState={viewState}
+        onViewStateChange={({ viewState }) => setViewState(viewState as MapViewState)}
         controller={true}
         layers={deckLayers}
       >
@@ -113,4 +106,4 @@ const IncomTaxMap = () => {
     )
 }
 
-export default IncomTaxMap;
+export default IncomeTaxMap;

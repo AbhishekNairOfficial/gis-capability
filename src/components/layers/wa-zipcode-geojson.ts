@@ -14,7 +14,7 @@ const WashingtonZipcodeGeoJson = ({ layers, setZipCode, setHoverInfo }: { layers
     getFillColor: [173, 216, 230, 200],
     highlightColor: [0, 0, 139, 200],
     autoHighlight: true,
-    visible: layers.countyPoints,
+    visible: layers.zipCodePoints,
     onHover: (info) => {
         setZipCode(info.object?.properties.ZCTA5CE10);
         setHoverInfo(info);
