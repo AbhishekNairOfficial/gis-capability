@@ -1,5 +1,5 @@
 import React from "react";
-import useMapStore from ".";
+import useMapStore from "./useMapStore";
 
 const useLayerVisibility = () => {
     const zoom = useMapStore((state: any) => state.viewState.zoom);

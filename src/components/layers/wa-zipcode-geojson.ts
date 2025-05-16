@@ -1,7 +1,7 @@
 import { GeoJsonLayer } from "@deck.gl/layers";
 import waZipcodeGeoJson from '../../data/wa_washington_zip_codes_geo.min.json';
 
-const WashingtonZipcodeGeoJson = ({ layers, setZipCode, setHoverInfo }: { layers: any, setZipCode: (zipCode: string) => void, setHoverInfo: (hoverInfo: any) => void }) => (
+const WashingtonZipcodeGeoJson = ({ layers, setZipCode, setCoordinates }: { layers: any, setZipCode: (zipCode: string) => void, setCoordinates: (coordinates: {x: number, y: number}) => void }) => (
     new GeoJsonLayer({
     id: 'zipcodes',
     data: (waZipcodeGeoJson as any).features,
@@ -17,7 +17,7 @@ const WashingtonZipcodeGeoJson = ({ layers, setZipCode, setHoverInfo }: { layers
     visible: layers.zipCodePoints,
     onHover: (info) => {
         setZipCode(info.object?.properties.ZCTA5CE10);
-        setHoverInfo(info);
+        setCoordinates({x: info.x, y: info.y});
       },
   })
 );
