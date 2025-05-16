@@ -8,26 +8,19 @@ import {useMapStore} from "@/lib/zustand";
 import useLayerVisibility from "@/lib/zustand/useLayerVisibility";
 import useZipcodeStore from "@/lib/zustand/useZipcodeStore";
 import HoverCard from "./hover-card";
+import ZipcodeDrawer from "./ZipcodeDrawer";
 
 const IncomeTaxMap = () => {
 
     // State variables and functions from Zustand
     const viewState = useMapStore((state: any) => state.viewState);
-    const layers = useMapStore((state: any) => state.layers);
     const setViewState = useMapStore((state: any) => state.setViewState);
 
-    const {x,y} = useZipcodeStore((state: any) => state.coordinates);
-    const setCoordinates = useZipcodeStore((state: any) => state.setCoordinates);
-    const setZipCode = useZipcodeStore((state: any) => state.setZipcode);
-    const setIsLoading = useZipcodeStore((state: any) => state.setIsLoading);
-    
-    const [insights, setInsights] = useState<string>("");
-    const abortControllerRef = useRef<AbortController | null>(null);
-
+    // Layer visibility hook
     useLayerVisibility();
 
     const deckLayers = [
-      [WashingtonZipcodeGeoJson({setZipCode, setCoordinates, layers})]
+      [WashingtonZipcodeGeoJson()]
     ];
 
     // const fetchInsights = async () => {
@@ -83,6 +76,7 @@ const IncomeTaxMap = () => {
           mapboxAccessToken={process.env.NEXT_PUBLIC_MAPBOX_TOKEN}
         />
         <HoverCard />
+        <ZipcodeDrawer />
       </DeckGL>
     </div>
     )

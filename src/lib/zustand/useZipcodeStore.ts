@@ -9,6 +9,8 @@ const useZipcodeStore = create((set) => ({
     setIsLoading: (isLoading: boolean) => set({ isLoading }),
     coordinates: {x: 0, y: 0},
     setCoordinates: (coordinates: {x: number, y: number}) => set({ coordinates }),
+    isDrawerOpen: false,
+    setIsDrawerOpen: (isDrawerOpen: boolean) => set({ isDrawerOpen }),
 }));
 
 export default useZipcodeStore;
