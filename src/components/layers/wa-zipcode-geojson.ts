@@ -11,8 +11,8 @@ const WashingtonZipcodeGeoJson = ({ layers, setZipCode, setHoverInfo }: { layers
     extruded: false,
     lineWidthMinPixels: 1,
     getLineColor: [255, 255, 255],
-    getFillColor: [173, 216, 230, 200],
-    highlightColor: [0, 0, 139, 200],
+    getFillColor: [239, 207, 189],
+    highlightColor: [197, 100, 48, 255],
     autoHighlight: true,
     visible: layers.zipCodePoints,
     onHover: (info) => {
