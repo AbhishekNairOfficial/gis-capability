@@ -1,70 +1,67 @@
-import { useState, useEffect, useRef } from "react";
 import WashingtonZipcodeGeoJson from "@/components/layers/wa-zipcode-geojson";
-import { MapViewState, useMap } from "@/lib/state/MapContext";
+import { MapViewState } from "@/lib/state/MapContext";
 import DeckGL from "@deck.gl/react";
 import MapGL from 'react-map-gl/mapbox';
-import { Skeleton } from "@/components/ui/skeleton";
-import {useMapStore} from "@/lib/zustand";
+import { useMapStore } from "@/lib/zustand";
 import useLayerVisibility from "@/lib/zustand/useLayerVisibility";
-import useZipcodeStore from "@/lib/zustand/useZipcodeStore";
 import HoverCard from "./hover-card";
 import ZipcodeDrawer from "./ZipcodeDrawer";
 
 const IncomeTaxMap = () => {
 
-    // State variables and functions from Zustand
-    const viewState = useMapStore((state: any) => state.viewState);
-    const setViewState = useMapStore((state: any) => state.setViewState);
+  // State variables and functions from Zustand
+  const viewState = useMapStore((state: any) => state.viewState);
+  const setViewState = useMapStore((state: any) => state.setViewState);
 
-    // Layer visibility hook
-    useLayerVisibility();
+  // Layer visibility hook
+  useLayerVisibility();
 
-    const deckLayers = [
-      [WashingtonZipcodeGeoJson()]
-    ];
+  const deckLayers = [
+    [WashingtonZipcodeGeoJson()]
+  ];
 
-    // const fetchInsights = async () => {
-    //   // Cancel any existing request
-    //   return;
-    //   setIsLoading(true);
-    //   if (abortControllerRef.current) {
-    //     abortControllerRef.current.abort();
-    //   }
+  // const fetchInsights = async () => {
+  //   // Cancel any existing request
+  //   return;
+  //   setIsLoading(true);
+  //   if (abortControllerRef.current) {
+  //     abortControllerRef.current.abort();
+  //   }
 
-    //   // Create new AbortController for this request
-    //   abortControllerRef.current = new AbortController();
+  //   // Create new AbortController for this request
+  //   abortControllerRef.current = new AbortController();
 
-    //   const response = await fetch('/api/fetchZipCodeInsights', {
-    //     method: 'POST',
-    //     headers: {
-    //       'Content-Type': 'application/json',
-    //     },
-    //     body: JSON.stringify({ zipCode }),
-    //     signal: abortControllerRef.current.signal
-    //   });
+  //   const response = await fetch('/api/fetchZipCodeInsights', {
+  //     method: 'POST',
+  //     headers: {
+  //       'Content-Type': 'application/json',
+  //     },
+  //     body: JSON.stringify({ zipCode }),
+  //     signal: abortControllerRef.current.signal
+  //   });
 
-    //   if (!response.ok) {
-    //     const err = await response.json();
-    //     throw new Error(err.error);
-    //   }
+  //   if (!response.ok) {
+  //     const err = await response.json();
+  //     throw new Error(err.error);
+  //   }
 
-    //   const data = await response?.json();
-    //   setInsights(data.insights);
-    //   setIsLoading(false);
-    // };
+  //   const data = await response?.json();
+  //   setInsights(data.insights);
+  //   setIsLoading(false);
+  // };
 
-    // useEffect(() => {
-    //   if (zipCode) {
-    //     const timeoutId = setTimeout(() => {
-    //       fetchInsights();
-    //     }, 500);
+  // useEffect(() => {
+  //   if (zipCode) {
+  //     const timeoutId = setTimeout(() => {
+  //       fetchInsights();
+  //     }, 500);
 
-    //     return () => clearTimeout(timeoutId);
-    //   }
-    // }, [zipCode]);
+  //     return () => clearTimeout(timeoutId);
+  //   }
+  // }, [zipCode]);
 
-    return (
-        <div className="relative w-full h-screen">
+  return (
+    <div className="relative w-full h-screen">
       <DeckGL
         viewState={viewState}
         onViewStateChange={({ viewState }) => setViewState(viewState as MapViewState)}
@@ -79,7 +76,7 @@ const IncomeTaxMap = () => {
         <ZipcodeDrawer />
       </DeckGL>
     </div>
-    )
+  )
 }
 
 export default IncomeTaxMap;
