@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import { Bar, BarChart, CartesianGrid, XAxis, Label } from "recharts"
+import { Bar, BarChart, CartesianGrid, XAxis, LabelList } from "recharts"
 
 import {
   Card,
@@ -114,9 +114,12 @@ export default function InteractiveBarChart({ data }: { data: any[] }) {
               dataKey={activeChart} 
               fill={`var(--chart-1)`}
             >
-              <Label
-                position="top"
-                content={({ value }) => value?.toLocaleString()}
+              <LabelList
+                dataKey={activeChart}
+                position="insideTop"
+                formatter={(value: number) => value?.toLocaleString()}
+                fill="white"
+                style={{ fontSize: '14px' }}
               />
             </Bar>
           </BarChart>
