@@ -54,11 +54,11 @@ export default function InteractiveBarChart({ data }: { data: any[] }) {
   return (
     <Card>
       <CardHeader className="flex flex-col items-stretch space-y-0 border-b p-0 sm:flex-row">
-        <div className="flex flex-1 flex-col justify-center gap-1 px-6 py-5 sm:py-6">
-          <CardTitle>Bar Chart - Interactive</CardTitle>
-          <CardDescription>
-            Showing total visitors for the last 3 months
-          </CardDescription>
+        <div className="flex flex-1 flex-col justify-center gap-1 px-3">
+          <CardTitle>Income Bracket</CardTitle>
+          {/* <CardDescription>
+            Showing total returns for the last 3 years
+          </CardDescription> */}
         </div>
         <div className="flex">
           {['$1 under $25,000', '$25,000 under $50,000', '$50,000 under $75,000', '$75,000 under $100,000', '$100,000 under $200,000', '$200,000 or more'].map((key) => {
@@ -67,7 +67,7 @@ export default function InteractiveBarChart({ data }: { data: any[] }) {
               <button
                 key={chart}
                 data-active={activeChart === chart}
-                className="relative z-30 flex flex-1 flex-col justify-center gap-1 border-t px-6 py-4 text-left even:border-l data-[active=true]:bg-muted/50 sm:border-l sm:border-t-0 sm:px-8 sm:py-6"
+                className="relative z-30 flex flex-1 flex-col justify-center gap-1 border-t px-1 text-left even:border-l data-[active=true]:bg-muted/50 sm:border-l sm:border-t-0 sm:px-2"
                 onClick={() => setActiveChart(chart)}
               >
                 <span className="text-xs text-muted-foreground">

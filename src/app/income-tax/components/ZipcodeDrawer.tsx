@@ -11,6 +11,7 @@ import {useZipcodeStore} from "@/lib/zustand";
 import { Button } from "@/components/ui/button";
 import InteractiveBarChart from "@/components/interactive-bar-chart";
 import React from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 const ZipcodeDrawer = () => {
   const isDrawerOpen = useZipcodeStore((state:any) => state.isDrawerOpen);
@@ -39,15 +40,23 @@ const ZipcodeDrawer = () => {
           </DrawerDescription>
         </DrawerHeader>
         <DrawerContent>
-          <InteractiveBarChart data={data} />
+          <div className="p-4 flex gap-4">
+            <div className="flex-3">
+              <InteractiveBarChart data={data} />
+            </div>
+            <div className="flex-1">
+              <Card>
+                <CardHeader className="border-b">
+                  <CardTitle>Insights</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p>Insights</p>
+                </CardContent>
+              </Card>
+            </div>
+          </div>
+          {/* </div> */}
         </DrawerContent>
-        {/* <div className="p-4">
-          {insights ? (
-            <p className="text-sm text-gray-600">{insights}</p>
-          ) : (
-            <p className="text-sm text-gray-400">No insights available for this zipcode.</p>
-          )}
-        </div> */}
         <DrawerFooter>
           <DrawerClose asChild>
             <Button variant="outline">Close</Button>
