@@ -1,6 +1,6 @@
 import { createClient } from '@supabase/supabase-js';
 
-const YEARS = Array.from({ length: 3 }, (_, i) => 2020 + i); // 2020 to 2022
+const YEARS = Array.from({ length: 6 }, (_, i) => 2017 + i); // 2017 to 2022
 
 async function fetchYearData(supabase: any, year: number, zipcode: string) {
   const { data, error } = await supabase
