@@ -23,8 +23,11 @@ async function fetchYearData(supabase: any, year: number, zipcode: string) {
   return formattedData;
 }
 
-export const GET = async (req: Request, { params }: { params: { id: string } }) => {
-  const zipcode = await params.id;
+export const GET = async (
+  request: Request,
+  { params }: { params: Promise<{ id: string }> }
+) => {
+  const zipcode = (await params).id;
 
   if (!zipcode) {
     return new Response(JSON.stringify({ error: 'Zipcode is required' }), { status: 400 });
