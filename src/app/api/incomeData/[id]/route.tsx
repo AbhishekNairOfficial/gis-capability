@@ -1,6 +1,6 @@
 import { createClient } from '@supabase/supabase-js';
 
-const YEARS = Array.from({ length: 2 }, (_, i) => 2021 + i); // 2021 to 2022
+const YEARS = Array.from({ length: 3 }, (_, i) => 2020 + i); // 2020 to 2022
 
 async function fetchYearData(supabase: any, year: number, zipcode: string) {
   const { data, error } = await supabase
@@ -24,7 +24,7 @@ async function fetchYearData(supabase: any, year: number, zipcode: string) {
 }
 
 export const GET = async (req: Request, { params }: { params: { id: string } }) => {
-  const zipcode = params.id;
+  const zipcode = await params.id;
 
   if (!zipcode) {
     return new Response(JSON.stringify({ error: 'Zipcode is required' }), { status: 400 });
