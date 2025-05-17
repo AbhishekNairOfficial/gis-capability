@@ -52,7 +52,7 @@ export default function InteractiveBarChart({ data }: { data: any[] }) {
     React.useState<keyof typeof chartConfig>("$1 under $25,000");
 
   return (
-    <Card>
+    <Card className="max-h-[400px]">
       <CardHeader className="flex flex-col items-stretch space-y-0 border-b p-0 sm:flex-row">
         <div className="flex flex-1 flex-col justify-center gap-1 px-3">
           <CardTitle>Income Bracket</CardTitle>

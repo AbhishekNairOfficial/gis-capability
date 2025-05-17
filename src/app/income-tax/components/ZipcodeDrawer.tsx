@@ -12,6 +12,7 @@ import { Button } from "@/components/ui/button";
 import InteractiveBarChart from "@/components/interactive-bar-chart";
 import React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import InsightsCard from "./insights-card";
 
 const ZipcodeDrawer = () => {
   const isDrawerOpen = useZipcodeStore((state:any) => state.isDrawerOpen);
@@ -44,15 +45,8 @@ const ZipcodeDrawer = () => {
             <div className="flex-3">
               <InteractiveBarChart data={data} />
             </div>
-            <div className="flex-1">
-              <Card>
-                <CardHeader className="border-b">
-                  <CardTitle>Insights</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p>Insights</p>
-                </CardContent>
-              </Card>
+            <div className="flex-2">
+              <InsightsCard data={data} />
             </div>
           </div>
           {/* </div> */}
