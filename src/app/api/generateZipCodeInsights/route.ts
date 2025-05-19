@@ -33,8 +33,7 @@ export async function POST(req: Request) {
       This shows the number of people who filed income tax in a particular area, for different income brackets over a few years.
       I am a senior director, and I would like high level insights with some color and bolded text.
       Dont say shit like "consider" etc, I want prompt responses that are professional and to the point.
-      Use markdown formatting, and html tags for colors. I'm using React-Markdown to render the response.
-      Show data in numbers, preferably with HTML tag, showing the percentage changes over time.
+      Show data in numbers, make text bold, showing the percentage changes over time.
       Limit your response to 3-4 sentences, and make it easy to read.
     `;
 
